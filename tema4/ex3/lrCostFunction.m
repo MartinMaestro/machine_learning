@@ -36,14 +36,13 @@ grad = zeros(size(theta));
 %           grad = grad + YOUR_CODE_HERE (using the temp variable)
 %
 
+subtotal = -y .* log(sigmoid(X*theta)) - (1 - y) .* log(1 - sigmoid(X*theta));
+regularization = (lambda/(2*length(y)))*(sum(theta(2:end).*theta(2:end)));
+J = sum(subtotal)/length(y) + regularization;
 
-
-
-
-
-
-
-
+subTotal = sigmoid(X*theta)-y;
+regularization_grad = [0; (lambda/length(y))*theta(2:end)];
+grad = (sum(subTotal.*X, 1)/length(y)) + regularization_grad';
 
 % =============================================================
 
