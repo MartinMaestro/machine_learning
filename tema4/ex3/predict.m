@@ -24,9 +24,10 @@ p = zeros(size(X, 1), 1);
 
 
 
+subtotal = [ones(size(X,1), 1), sigmoid([ones(size(X, 1), 1), X]*Theta1')]*Theta2';
 
 
-
+[ones, p] = max(sigmoid(subtotal), [], 2);
 
 
 % =========================================================================
