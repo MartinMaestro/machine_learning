@@ -62,23 +62,22 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+yLogistic = [y, zeros(length(y), num_labels - 1)];
 
+for i = 1 : num_labels
+    row = zeros(1, num_labels);
+    row(i) = 1;
+    indices = find(yLogistic(:,1) == i);
+    yLogistic(indices, :) = repmat(row, length(indices), 1);
+end
 
+hTheta = [ones(size(X,1), 1), sigmoid([ones(size(X, 1), 1), X]*Theta1')]*Theta2';
+hTheta = sigmoid(hTheta);
 
+subtotal = -yLogistic .* log(hTheta) - (1 - yLogistic) .* log(1 - hTheta);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+regularization = (lambda/(2*length(y)))*(sum(sum(Theta1(:, 2:end).*Theta1(:, 2:end))) + sum(sum(Theta2(:, 2:end).*Theta2(:, 2:end))));
+J = (sum(sum(subtotal))/length(y)) + regularization;
 
 % -------------------------------------------------------------
 
