@@ -70,21 +70,52 @@ for i = 1 : num_labels
     indices = find(yLogistic(:,1) == i);
     yLogistic(indices, :) = repmat(row, length(indices), 1);
 end
+[a1, a2, a3] = computeAes(X, Theta1, Theta2);
 
-hTheta = [ones(size(X,1), 1), sigmoid([ones(size(X, 1), 1), X]*Theta1')]*Theta2';
-hTheta = sigmoid(hTheta);
+%fprintf('******************************size of a2 %i x %i \n', size(a2));
+%fprintf('******************************size of a3 %i x %i \n', size(a3));
+%fprintf('******************************size of Theta1 %i x %i \n', size(Theta1));
+%fprintf('******************************size of Theta2 %i x %i \n', size(Theta2));
+%fprintf('%f \n', y(1, :));
 
-subtotal = -yLogistic .* log(hTheta) - (1 - yLogistic) .* log(1 - hTheta);
+subtotal = -yLogistic .* log(a3) - (1 - yLogistic) .* log(1 - a3);
 
 regularization = (lambda/(2*length(y)))*(sum(sum(Theta1(:, 2:end).*Theta1(:, 2:end))) + sum(sum(Theta2(:, 2:end).*Theta2(:, 2:end))));
 J = (sum(sum(subtotal))/length(y)) + regularization;
 
+D1 = 0;
+D2 = 0;
 % -------------------------------------------------------------
-
+for i = 1 : m
+    [a1, a2, a3] = computeAes(X(i, :), Theta1, Theta2);
+    d3 = a3 - yLogistic(i, :);
+    %fprintf('******************************size of d3 %i x %i \n', size(d3));
+    gPrimaZ1 = sigmoidGradient(Theta1*a1');
+    %fprintf('******************************size of gPrimaZ1 %i x %i \n', size(gPrimaZ1));
+    theta2Error3 = Theta2(:,2:end)' * d3';
+    %fprintf('******************************size of theta2Error3 %i x %i \n', size(theta2Error3));
+    d2 = theta2Error3.*gPrimaZ1;
+    %fprintf('******************************size of d2 %i x %i \n', size(d2));
+    D1 = D1 + d2 * a1;
+    %fprintf('******************************size of D2 %i x %i \n', size(D1));
+    D2 = D2 + d3' * a2;
+    %fprintf('******************************size of D3 %i x %i \n', size(D2));
+end
 % =========================================================================
+
+Theta1_grad = D1 ./ m;
+Theta2_grad = D2 ./ m;
+
+Theta1_grad = Theta1_grad(:,2:end) + ((lambda / m) * Theta1(:,2:end));
+Theta2_grad = Theta2_grad(:,2:end) + ((lambda / m) * Theta2(:,2:end));
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
 
+end
 
+function [a1 a2 a3] = computeAes(X, Theta1, Theta2)
+    a1 = [ones(size(X,1), 1), X];
+    a2 = [ones(size(X,1), 1),sigmoid(a1*Theta1')];
+    a3 = sigmoid( a2*Theta2');
 end
