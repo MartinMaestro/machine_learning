@@ -21,15 +21,16 @@ grad = zeros(size(theta));
 
 
 
+subtotal = (X*theta)-y;
+subtotal = sum(subtotal.*subtotal)/(2*m);
+%fprintf("Las dimensiones de subtotal: %i x %i", size(subtotal));
 
+regularization = (lambda/(2*m))*(sum(theta(2:end).*theta(2:end)));
+J = subtotal + regularization;
 
-
-
-
-
-
-
-
+subTotal = (X*theta)-y;
+regularization_grad = [0; (lambda/length(y))*theta(2:end)];
+grad = (sum(subTotal.*X, 1)/length(y)) + regularization_grad';
 % =========================================================================
 
 grad = grad(:);
