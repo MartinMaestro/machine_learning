@@ -16,8 +16,8 @@ sim = 0;
 %
 %
 
-
-
+subtotal = x1 - x2;
+sim = exp(-(sum(subtotal.*subtotal)/(2*sigma^2)));
 
 
 
