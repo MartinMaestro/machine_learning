@@ -7,9 +7,11 @@ function idx = findClosestCentroids(X, centroids)
 
 % Set K
 K = size(centroids, 1);
+fprintf('El tamaño de K es: %i \n', K);
+m = size(X,1);
 
 % You need to return the following variables correctly.
-idx = zeros(size(X,1), 1);
+idx = zeros(m, 1);
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Go over every example, find its closest centroid, and store
@@ -22,9 +24,16 @@ idx = zeros(size(X,1), 1);
 %
 
 
+for i = 1:m
 
+element_matrix = repmat(X(i, :),K,1);
+element_matrix = element_matrix - centroids;
+element_matrix = element_matrix.*element_matrix;
+result = sum(element_matrix, 2);
+[value, index] = min(result);
+idx(i) = index;
 
-
+end
 
 
 % =============================================================
