@@ -26,8 +26,6 @@ number_of_data_points = zeros(K,1);
 % Note: You can use a for-loop over the centroids to compute this.
 %
 
-
-
 for i = 1:m
 centroid = idx(i);
 centroids(centroid, :) = centroids(centroid, :) + X(i, :);
@@ -35,7 +33,6 @@ number_of_data_points(centroid) = number_of_data_points(centroid) + 1;
 end
 
 centroids = (1./number_of_data_points).*centroids;
-
 
 % =============================================================
 
